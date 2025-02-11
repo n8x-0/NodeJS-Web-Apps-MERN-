@@ -1,6 +1,17 @@
+const jwt = require("jsonwebtoken")
+
 module.exports.authMiddleware = async ( req, res, next ) => {
-    const token= await req.cookies
-    console.log("authmiddleware says: ",token);
-    console.log("Cookies in headers:", req.headers.cookie);
+    const {userid} = req.params
+    const token = req.cookies.session_token
+    if(!token){
+        return res.status(401).json({error: "No session found"})
+    }
+    const session = jwt.verify(token, process.env.JWT_SECRET)
+    if(!session){
+        return res.status(401).json({error: "Invalid session"})
+    }
+    if(session._id !== userid){
+        return res.status(401).json({error: "Invalid session"})
+    }
     next()
 }

@@ -1,5 +1,5 @@
 const bcrpyt = require("bcrypt")
-const { dbconnect, disconnectDB } = require("../db/db.connection")
+const { dbconnect } = require("../db/db.connection")
 const userModel = require("../db/db.usermodel")
 const sessionUpdate = require("../helper/sessionupdate")
 
@@ -27,12 +27,13 @@ module.exports.register = async (req, res) => {
         if(newUser){
             sessionUpdate(newUser, res)
         }
+        
+        delete newUser._doc.password
+
         return res.status(200).json({ newUser, message: "User registered." })
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Something went wrong" })
-    } finally {
-        await disconnectDB()
     }
 }
 
@@ -44,7 +45,7 @@ module.exports.login = async (req, res) => {
     }
 
     try {
-        await dbconnect()
+        await dbconnect();
         const isUser = await userModel.findOne({ email })
         
         if (!isUser) {
@@ -60,8 +61,7 @@ module.exports.login = async (req, res) => {
         }
         return res.status(200).json({ message: "Login Succes :)" })
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: "Something went wrong, please try again letter." })
-    } finally {
-        await disconnectDB()
     }
 }

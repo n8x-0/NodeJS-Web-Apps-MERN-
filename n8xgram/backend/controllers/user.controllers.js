@@ -1,4 +1,4 @@
-const { dbconnect, disconnectDB } = require("../db/db.connection")
+const { dbconnect } = require("../db/db.connection")
 const userModel = require("../db/db.usermodel")
 const { v2 } = require("cloudinary");
 const { Readable } = require("stream");
@@ -12,15 +12,13 @@ v2.config({
 
 module.exports.userProfile = async (req, res) => {
     const { userid } = req.params
-    
-    try {
+    try {        
         await dbconnect()
         const user = await userModel.findById(userid)
+        delete user._doc.password
         return res.status(200).json(user)
     } catch (error) {
         return res.status(500).json({ error: "Something went wrong" })
-    } finally {
-        await disconnectDB()
     }
 }
 
@@ -30,11 +28,11 @@ module.exports.getAllUsers = async (req, res) => {
     try {
         await dbconnect()
         const allusers = await userModel.find({})
+        allusers.forEach((data)=> delete data._doc.password)
+        
         return res.status(200).json(allusers)
     } catch (error) {
         return res.status(500).json({ error: "Error fetching users" })
-    } finally {
-        await disconnectDB()
     }
 }
 
@@ -47,12 +45,10 @@ module.exports.deleteUserById = async (req, res) => {
 
     try {
         await dbconnect()
-        const delUser = await userModel.findByIdAndDelete({ _id: userid })
-        return res.status(200).json(delUser)
+        await userModel.findByIdAndDelete({ _id: userid })
+        return res.status(200).json({message: "Your account has been deleted successfully."})
     } catch (error) {
         return res.status(500).json({ error: "Error deleting your account" })
-    } finally {
-        await disconnectDB()
     }
 }
 
@@ -88,8 +84,6 @@ module.exports.updateUser = async (req, res) => {
         return res.status(200).json(updatedUserData)
     } catch (error) {
         return res.status(500).json({ error: "Something went wrong." })
-    } finally {
-        await disconnectDB()
     }
 }
 
@@ -155,8 +149,6 @@ module.exports.uploadProfileImage = async (req, res) => {
             } catch (error) {
                 console.log("Err updatinf user image in db: ", error);
                 return res.status(400).json({ error: "An error occured uploading your image, try again!" })
-            } finally {
-                await disconnectDB()
             }
         } catch (error) {
             console.log("Err uploading to cloudinary: ", error);
