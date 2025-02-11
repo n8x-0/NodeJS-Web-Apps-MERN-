@@ -7,13 +7,14 @@ import Uploadpicbtn from "@/components/profile/uploadpicbtn";
 import { useParams, useRouter } from "next/navigation";
 import LoadingProfile from "@/components/profile/loadingProfile";
 import { sessionCont } from "@/context/session";
+import { UserT, VideoPost } from "@/utils/types";
 
 const UserProfileClient = () => {
   const router = useRouter();
   const { userid } = useParams();
-  const [userdata, setUserdata] = useState<any>(null);
-  const [userPosts, setUsersPosts] = useState<any>(null);
-  const [selectedPost, setSelectedPost] = useState<any>(null);
+  const [userdata, setUserdata] = useState<UserT | null>(null);
+  const [userPosts, setUsersPosts] = useState<VideoPost[] | null>(null);
+  const [selectedPost, setSelectedPost] = useState<VideoPost | null>(null);
   const session = useContext(sessionCont);
 
   const fetchData = async () => {
@@ -94,15 +95,15 @@ const UserProfileClient = () => {
 
           <div className="flex gap-6 mb-4">
             <div className="text-center">
-              <span className="font-semibold">{userdata.posts.length}</span>
+              <span className="font-semibold">{userdata.posts?.length}</span>
               <p className="text-sm text-gray-600">posts</p>
             </div>
             <div className="text-center">
-              <span className="font-semibold">{userdata.followers.length}</span>
+              <span className="font-semibold">{userdata.followers?.length}</span>
               <p className="text-sm text-gray-600">followers</p>
             </div>
             <div className="text-center">
-              <span className="font-semibold">{userdata.followings.length}</span>
+              <span className="font-semibold">{userdata.followings?.length}</span>
               <p className="text-sm text-gray-600">following</p>
             </div>
           </div>
@@ -110,7 +111,7 @@ const UserProfileClient = () => {
           <div className="space-y-1">
             <p className="font-medium">{userdata.username}</p>
             <p className="text-sm text-gray-600">
-              Joined {new Date(userdata.createdAt).toLocaleDateString()}
+              Joined {new Date(userdata.createdAt!).toLocaleDateString()}
             </p>
           </div>
         </div>
@@ -124,7 +125,7 @@ const UserProfileClient = () => {
           </button>
         </div>
 
-        {userdata.posts.length === 0 ? (
+        {userdata.posts?.length === 0 ? (
           <div className="text-center py-12">
             <Camera size={48} className="mx-auto text-gray-400 mb-4" />
             <h2 className="text-2xl font-semibold mb-2">Share Photos</h2>
@@ -135,7 +136,7 @@ const UserProfileClient = () => {
         ) : (
           <div className="grid grid-cols-3 gap-1">
             {userPosts &&
-              userPosts.map((post: any, index: number) => (
+              userPosts.map((post: VideoPost, index: number) => (
                 <div
                   key={index}
                   className="aspect-square bg-gray-100 cursor-pointer"

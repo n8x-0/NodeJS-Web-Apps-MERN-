@@ -7,11 +7,12 @@ import Uploadpicbtn from '@/components/profile/uploadpicbtn';
 import { useParams, useRouter } from 'next/navigation';
 import LoadingProfile from '@/components/profile/loadingProfile';
 import { sessionCont } from '@/context/session';
+import { UserT, VideoPost } from '@/utils/types';
 
 const UserProfileDisplayPage = () => {
     const router = useRouter()
     const { usersid } = useParams()
-    const [userdata, setUserdata] = useState<any>(null);
+    const [userdata, setUserdata] = useState<UserT | null>(null);
     const session = useContext(sessionCont)
 
     useEffect(() => {
@@ -75,15 +76,15 @@ const UserProfileDisplayPage = () => {
 
                     <div className="flex gap-6 mb-4">
                         <div className="text-center">
-                            <span className="font-semibold">{userdata.posts.length}</span>
+                            <span className="font-semibold">{userdata.posts?.length}</span>
                             <p className="text-sm text-gray-600">posts</p>
                         </div>
                         <div className="text-center">
-                            <span className="font-semibold">{userdata.followers.length}</span>
+                            <span className="font-semibold">{userdata.followers?.length}</span>
                             <p className="text-sm text-gray-600">followers</p>
                         </div>
                         <div className="text-center">
-                            <span className="font-semibold">{userdata.followings.length}</span>
+                            <span className="font-semibold">{userdata.followings?.length}</span>
                             <p className="text-sm text-gray-600">following</p>
                         </div>
                     </div>
@@ -91,7 +92,7 @@ const UserProfileDisplayPage = () => {
                     <div className="space-y-1">
                         <p className="font-medium">{userdata.username}</p>
                         <p className="text-sm text-gray-600">
-                            Joined {new Date(userdata.createdAt).toLocaleDateString()}
+                            Joined {new Date(userdata.createdAt!).toLocaleDateString()}
                         </p>
                     </div>
 
@@ -112,7 +113,7 @@ const UserProfileDisplayPage = () => {
                     </button>
                 </div>
 
-                {userdata.posts.length === 0 ? (
+                {userdata.posts?.length === 0 ? (
                     <div className="text-center py-12">
                         <Camera size={48} className="mx-auto text-gray-400 mb-4" />
                         <h2 className="text-2xl font-semibold mb-2">Share Photos</h2>
@@ -122,9 +123,10 @@ const UserProfileDisplayPage = () => {
                     </div>
                 ) : (
                     <div className="grid grid-cols-3 gap-1">
-                        {userdata.posts.map((post: string[], index: number) => (
-                            <div key={index} className="aspect-square bg-gray-100"></div>
-                        ))}
+                        {userdata.posts ?
+                            userdata.posts.map((post: VideoPost, index: number) => (
+                                <div key={index} className="aspect-square bg-gray-100"></div>
+                            )) : ""}
                     </div>
                 )}
             </div>

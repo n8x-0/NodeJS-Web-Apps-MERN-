@@ -1,6 +1,6 @@
 "use client"
 import { sessionCont } from '@/context/session';
-import { Search, Heart, Send, PlusSquare, Menu, Home, Compass } from 'lucide-react';
+import { Search, Heart, Send, PlusSquare, Home, Compass } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useContext } from 'react';

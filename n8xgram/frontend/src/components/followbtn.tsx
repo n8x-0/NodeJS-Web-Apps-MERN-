@@ -1,8 +1,9 @@
 "use client"
 import { sessionCont } from '@/context/session'
+import { UserT } from '@/utils/types'
 import { useContext, useState } from 'react'
 
-const FollowBtn = ({ user, currUserId }: { user: { _id: string, followers: string[], followings: string[] }, currUserId?: string }) => {
+const FollowBtn = ({ user, currUserId }: { user: UserT, currUserId?: string }) => {
     const [followLoading, setFollowLoading] = useState<string | null>(null)
     const session = useContext(sessionCont)
 
@@ -41,7 +42,7 @@ const FollowBtn = ({ user, currUserId }: { user: { _id: string, followers: strin
             ) : user.followers?.includes(currUserId) ? (
                 "Unfollow"
             ) : (
-                user.followings?.includes(currUserId) && !user.followers.includes(currUserId) ? "Follow Back" : "Follow"
+                user.followings?.includes(currUserId) && !user.followers?.includes(currUserId) ? "Follow Back" : "Follow"
             )}
         </button>
     )
