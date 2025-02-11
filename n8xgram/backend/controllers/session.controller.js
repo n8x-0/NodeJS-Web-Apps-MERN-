@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken")
 module.exports.getSession = async ( req, res) => {
     console.log("session called")
     const token = req.cookies.session_token;
+    console.log("token is: ", token);
+    
     if(!token){
         return res.status(400).json({error: "no session found"});
     }
