@@ -2,18 +2,15 @@ const jwt = require("jsonwebtoken")
 
 const sessionUpdate = (updatedUserData, res) => {
     const { _id, username, email, image } = updatedUserData
-    const isProduction = process.env.NODE_ENV === 'production';
 
-    console.log(isProduction, updatedUserData);
-    
     try {
         const token = jwt.sign({ _id, username, email, image }, process.env.JWT_SECRET)
-        console.log(token);
         res.cookie("session_token", token, {
             httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? 'strict' : 'lax',
-            path: '/',
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+            path: "/",
+            domain: 'n8xgram.vercel.app'
         })
     } catch (error) {
         console.log(error);
