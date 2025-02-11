@@ -8,7 +8,7 @@ const sessionUpdate = (updatedUserData, res) => {
         res.cookie("session_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+            sameSite: "None",
             path: "/",
             domain: 'n8xgram.vercel.app'
         })
