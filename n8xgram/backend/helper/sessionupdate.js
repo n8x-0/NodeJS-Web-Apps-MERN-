@@ -10,7 +10,6 @@ const sessionUpdate = (updatedUserData, res) => {
             secure: process.env.NODE_ENV === "production",
             sameSite: "None",
             path: "/",
-            domain: 'n8xgram.vercel.app'
         })
     } catch (error) {
         console.log(error);
