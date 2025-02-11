@@ -18,6 +18,8 @@ const SessionProvider = ({ children }: { children: React.ReactNode }) => {
     console.log("calling session");
     try {
       const session = await getSession();
+      console.log(session);
+      
       if (session.error) {
         setSession(undefined);
       } else {
