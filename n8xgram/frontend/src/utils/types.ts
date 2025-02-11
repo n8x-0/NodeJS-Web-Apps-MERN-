@@ -1,6 +1,7 @@
 export interface PostAssets {
     thumbnail: string;
     iframe: string;
+    player: string
 }
 
 export interface VideoPost {

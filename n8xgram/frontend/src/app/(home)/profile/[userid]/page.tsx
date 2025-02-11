@@ -160,25 +160,28 @@ const UserProfileClient = () => {
 
       {selectedPost && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 transition-opacity duration-300"
           onClick={() => setSelectedPost(null)}
         >
           <div
-            className="relative bg-white p-4 rounded shadow-lg"
+            className="relative bg-black p-4 rounded-lg shadow-xl transform transition-all duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute -top-10 -right-10 text-white font-bold"
+              className="absolute top-2 right-2 text-white text-xl"
               onClick={() => setSelectedPost(null)}
             >
-              <X/>
+              <X />
             </button>
-            <div
-              className="sm:w-[560px] sm:h-[315px] w-full"
-              dangerouslySetInnerHTML={{
-                __html: selectedPost.assets.iframe,
-              }}
-            />
+            <div className="sm:w-[560px] sm:h-[315px] w-full">
+              <iframe
+                src={selectedPost.assets.player}
+                className="w-full h-full rounded-lg"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
           </div>
         </div>
       )}
