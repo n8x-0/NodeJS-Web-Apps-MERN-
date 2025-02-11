@@ -3,9 +3,11 @@ const router = express.Router()
 const multer = require("multer")
 const { uploadVideo, getAllvideos } = require("../controllers/posts.controllers")
 
-const upload = multer({ dest: "upload" })
+const storage = multer.memoryStorage();
+const upload = multer({ storage }).single('file');
+ 
 
 router.post("/", getAllvideos)
-router.post("/upload", upload.single('file'), uploadVideo)
+router.post("/upload", upload, uploadVideo)
 
 module.exports = router
