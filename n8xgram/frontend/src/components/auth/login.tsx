@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { emailValidator, passwordSanitizer } from "@/utils/validators";
 import { useContext, useEffect, useState } from "react";
@@ -64,8 +65,7 @@ const Login = () => {
             })
             const resp = await user.json()
             if (user.ok) {
-                session?.getUserSession()
-                router.push(`/profile/${session?.userSession?._id}`)
+                router.push(`/profile/${resp._id}`)
             } else {
                 setLoading(false)
                 setError(resp.error)

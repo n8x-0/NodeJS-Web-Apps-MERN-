@@ -1,6 +1,5 @@
 "use client"
 
-import { getSession } from "@/utils/getSession";
 import { emailValidator, nameValidator, passwordValidator } from "@/utils/validators";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -71,8 +70,7 @@ const Register = () => {
             const resp = await user.json()
             if (user.ok) {
                 console.log(resp);
-                const session = await getSession()
-                router.push(`/profile/${session._id}`)
+                router.push(`/profile/${resp._id}`)
             }else{
                 setLoading(false)
                 setError(resp.error)

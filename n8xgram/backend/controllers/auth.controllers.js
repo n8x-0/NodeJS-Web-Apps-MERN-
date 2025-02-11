@@ -24,13 +24,13 @@ module.exports.register = async (req, res) => {
 
         const newUser = await userModel.create({ ...userobj })
 
-        if(newUser){
+        if (newUser) {
             sessionUpdate(newUser, res)
         }
-        
+
         delete newUser._doc.password
 
-        return res.status(200).json({ newUser, message: "User registered." })
+        return res.status(200).json({ _id: newUser._id, message: "User registered." })
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Something went wrong" })
@@ -47,7 +47,7 @@ module.exports.login = async (req, res) => {
     try {
         await dbconnect();
         const isUser = await userModel.findOne({ email })
-        
+
         if (!isUser) {
             return res.status(401).json({ error: "Invalid Credentials" })
         }
@@ -56,10 +56,10 @@ module.exports.login = async (req, res) => {
             return res.status(401).json({ error: "Invalid Credentials" })
         }
 
-        if(isUser){
+        if (isUser) {
             sessionUpdate(isUser, res)
         }
-        return res.status(200).json({ message: "Login Succes :)" })
+        return res.status(200).json({ _id: isUser._id, message: "Login Succes :)" })
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Something went wrong, please try again letter." })
