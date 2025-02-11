@@ -14,7 +14,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE"],
-    origin: "https://n8xgram.vercel.app",
+    origin: ["https://n8xgram.vercel.app"],
     credentials: true,
 }));
 

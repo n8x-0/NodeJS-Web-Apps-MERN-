@@ -71,6 +71,7 @@ const Register = () => {
             if (user.ok) {
                 console.log(resp);
                 router.push(`/profile/${resp._id}`)
+                return
             }else{
                 setLoading(false)
                 setError(resp.error)

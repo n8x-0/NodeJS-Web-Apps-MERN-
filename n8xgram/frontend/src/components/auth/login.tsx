@@ -19,6 +19,7 @@ const Login = () => {
     useEffect(() => {
         if (session?.userSession) {
             router.push("/home");
+            return
         }
     }, [session, router]);
 
@@ -66,6 +67,7 @@ const Login = () => {
             const resp = await user.json()
             if (user.ok) {
                 router.push(`/profile/${resp._id}`)
+                return
             } else {
                 setLoading(false)
                 setError(resp.error)
