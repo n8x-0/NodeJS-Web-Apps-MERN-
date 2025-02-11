@@ -14,9 +14,9 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE"],
-    origin: "https://n8xgram.vercel.app",
+    origin: "http://localhost:3000",
     credentials: true,
-}))
+}));
 
 app.use("/auth", authRoutes)
 app.use("/user/:userid", authMiddleware, userRoutes)

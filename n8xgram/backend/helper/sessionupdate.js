@@ -18,3 +18,4 @@ const sessionUpdate = (updatedUserData, res) => {
 }
 
 module.exports = sessionUpdate
+

@@ -45,7 +45,6 @@ module.exports.uploadVideo = async (req, res) => {
 module.exports.getAllvideos = async (req, res) => {
     const page = req.body.page
     const filterId = req.body.userid
-    console.log(req.body);
     
     if (filterId) {
         const vdosList = await vdoClient.videos.list({
@@ -65,7 +64,6 @@ module.exports.getAllvideos = async (req, res) => {
         try {
             await dbconnect()
             const users = await userModel.find({ _id: { $in: usersid } }).select("username image followers followings");
-            console.log(users);
             
             const userMap = users.reduce((map, user) => {
                 map[user._id.toString()] = user;

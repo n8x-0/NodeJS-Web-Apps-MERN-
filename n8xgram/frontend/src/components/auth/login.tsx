@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { emailValidator, passwordSanitizer } from "@/utils/validators";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { sessionCont } from "@/context/session";
 
@@ -14,7 +14,12 @@ const Login = () => {
         password: "",
     })
     const session = useContext(sessionCont)
-    if (session?.userSession) { router.push(`/home`) }
+
+    useEffect(() => {
+        if (session?.userSession) {
+            router.push("/home");
+        }
+    }, [session, router]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target

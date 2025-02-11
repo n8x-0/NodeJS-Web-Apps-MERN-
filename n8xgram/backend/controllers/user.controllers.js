@@ -23,8 +23,6 @@ module.exports.userProfile = async (req, res) => {
 }
 
 module.exports.getAllUsers = async (req, res) => {
-    console.log(req.params);
-
     try {
         await dbconnect()
         const allusers = await userModel.find({})
