@@ -77,8 +77,6 @@ module.exports.getAllvideos = async (req, res) => {
                 author: userMap[video.metadata[0].value],
             }));
 
-            console.log(usersid, users, userMap, videosWithAuthors);
-
             return res.status(200).json(videosWithAuthors)
         } catch (error) {
             console.log(error);
