@@ -29,7 +29,7 @@ const HomePage = () => {
       try {
         const req = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/videos`, {
           method: "POST",
-          body: JSON.stringify(1),
+          body: JSON.stringify({page: 1}),
           cache: "no-store",
         });
 

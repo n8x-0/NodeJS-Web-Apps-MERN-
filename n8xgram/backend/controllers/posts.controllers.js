@@ -46,6 +46,8 @@ module.exports.getAllvideos = async (req, res) => {
     const page = req.body.page
     const filterId = req.body.userid
     
+    console.log(req.body);
+    
     if (filterId) {
         const vdosList = await vdoClient.videos.list({
             currentPage: page,
@@ -74,6 +76,8 @@ module.exports.getAllvideos = async (req, res) => {
                 ...video,
                 author: userMap[video.metadata[0].value],
             }));
+
+            console.log(videosWithAuthors);
 
             return res.status(200).json(videosWithAuthors)
         } catch (error) {
