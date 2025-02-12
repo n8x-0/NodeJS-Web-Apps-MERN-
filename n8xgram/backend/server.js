@@ -13,7 +13,11 @@ app.use(cookieParser())
 app.use(express.json({limit: "100mb"}))
 app.use(express.urlencoded({ limit: "100mb", extended: true }))
 
-app.use(cors());
+app.use(cors({
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: "https://n8xgram.vercel.app",
+    credentials: true,
+}));
 
 app.use("/auth", authRoutes)
 app.use("/user/:userid", authMiddleware, userRoutes)
