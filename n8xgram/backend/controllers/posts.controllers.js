@@ -18,6 +18,8 @@ module.exports.uploadVideo = async (req, res) => {
     }
 
     try {
+        console.log("begin: =======",req.body);
+        console.log("uploading: =======");
         const videoObject = await vdoClient.videos.create({
             title,
             description,
@@ -26,7 +28,9 @@ module.exports.uploadVideo = async (req, res) => {
                 { key: "authorId", value: id },
             ],
         })
+        console.log("vdo object: =======", videoObject);
         const uploadVideo = await vdoClient.videos.upload(videoObject.videoId, file.path)
+        console.log("vdo: =======", uploadVideo);
 
         if (uploadVideo) {
             await dbconnect()
