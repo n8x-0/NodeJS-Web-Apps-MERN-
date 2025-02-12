@@ -45,7 +45,7 @@ module.exports.uploadVideo = async (req, res) => {
 module.exports.getAllvideos = async (req, res) => {
     const page = req.body.page
     const filterId = req.body.userid
-    
+
     console.log(req.body);
     
     if (filterId) {
@@ -60,7 +60,6 @@ module.exports.getAllvideos = async (req, res) => {
 
     try {
         const vdosList = await vdoClient.videos.list({ currentPage: page, pageSize: 2 })
-
         const usersid = vdosList.data.map((data) => data.metadata[0].value)
 
         try {
@@ -77,7 +76,7 @@ module.exports.getAllvideos = async (req, res) => {
                 author: userMap[video.metadata[0].value],
             }));
 
-            console.log(videosWithAuthors);
+            console.log(userid, users, userMap, videosWithAuthors);
 
             return res.status(200).json(videosWithAuthors)
         } catch (error) {
