@@ -3,7 +3,7 @@
 import FollowBtn from '@/components/followbtn';
 import { Heart, PlaneIcon } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
+// import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 interface HomeVdoListIface {
