@@ -43,14 +43,15 @@ module.exports.uploadVideo = async (req, res) => {
 }
 
 module.exports.getAllvideos = async (req, res) => {
-    const page = req.body.page
-    const filterId = req.body.userid
+    const page = req.body.page || 1
+    const filterId = req.body.userid || null
 
     console.log(req.body);
     
     if (filterId) {
         const vdosList = await vdoClient.videos.list({
             currentPage: page,
+            headers: { "Content-Type": "application/json" },
             pageSize: 2,
             metadata: { "authorId": filterId } 
         });
