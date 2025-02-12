@@ -10,11 +10,12 @@ const { getSession } = require("./controllers/session.controller")
 const { authMiddleware } = require("./middlewares/authmiddleware")
 
 app.use(cookieParser())
-app.use(express.json({limit: "50mb"}))
-app.use(express.urlencoded({ limit: "50mb", extended: true }))
+app.use(express.json({limit: "100mb"}))
+app.use(express.urlencoded({ limit: "100mb", extended: true }))
+
 app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE"],
-    origin: ["https://n8xgram.vercel.app", "http://localhost:3000"],
+    origin: "https://n8xgram.vercel.app",
     credentials: true,
 }));
 

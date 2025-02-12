@@ -4,7 +4,7 @@ const userModel = require("../db/db.usermodel")
 
 module.exports.uploadVideo = async (req, res) => {
     const file = req.file
-    let { id, title, description, tags, username, userImage } = req.body
+    let { id, title, description, tags } = req.body
     tags = JSON.parse(tags)
 
     if (!id) {
