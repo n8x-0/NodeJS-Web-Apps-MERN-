@@ -29,7 +29,7 @@ const HomePage = () => {
       try {
         const req = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/videos`, {
           method: "POST",
-          body: JSON.stringify({page: 1}),
+          body: JSON.stringify({ page: 1 }),
           cache: "no-store",
         });
 
@@ -54,15 +54,19 @@ const HomePage = () => {
           return (
             <div key={video.videoId}>
               <div className="justify-between w-full p-3 border-zinc-700 border rounded-t-2xl flex items-center gap-2 text-sm">
-                <div className="flex items-center gap-2 font-medium">
-                  <Link href={`/home/users/${video.author._id}`} className="flex items-center gap-2 font-medium">
-                  <div className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-yellow-200">
-                    <Image src={video.author.image} alt="user image" width={400} height={400} className="w-full h-full object-cover" />
-                  </div>
-                  <p>{video.author.username}</p>
-                  </Link>
-                </div>
-                <FollowBtn user={video.author} />
+                {video.author &&
+                  <>
+                    <div className="flex items-center gap-2 font-medium">
+                      <Link href={`/home/users/${video.author._id}`} className="flex items-center gap-2 font-medium">
+                        <div className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-yellow-200">
+                          <Image src={video.author.image} alt="user image" width={400} height={400} className="w-full h-full object-cover" />
+                        </div>
+                        <p>{video.author.username}</p>
+                      </Link>
+                    </div>
+                    <FollowBtn user={video.author} />
+                  </>
+                }
               </div>
               <div className="w-[520px] h-fit pb-2">
                 <div className="w-full h-[520px] bg-zinc-600">
