@@ -1,9 +1,9 @@
-export const handlePostDelete = async (videoId: string) => {
+export const handlePostDelete = async (videoId: string, userid: string) => {
     if(!videoId){
         return
     }
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/videos/delete`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/${userid}/videos/delete`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({videoId}),
@@ -19,6 +19,6 @@ export const handlePostDelete = async (videoId: string) => {
     }
 }
 
-export const handlePostEdit = (videoId: string) => {
+export const handlePostEdit = (videoId: string, userid: string) => {
     console.log(videoId);
 }

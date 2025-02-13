@@ -193,14 +193,14 @@ const UserProfileClient = () => {
                     <div className="absolute top-full right-0 mt-2 w-48 rounded-xl bg-zinc-800/90 backdrop-blur-sm border border-zinc-700/50 shadow-xl transform transition-all duration-200 ease-out scale-95 group-hover:scale-100">
                       <div className="p-1.5">
                         <button
-                          onClick={() => handlePostEdit(selectedPost.videoId)}
+                          onClick={() => handlePostEdit(selectedPost.videoId, userid as string)}
                           className="flex items-center w-full px-4 py-2.5 text-sm text-zinc-300 hover:text-yellow-500 hover:bg-zinc-700/50 rounded-lg transition-all duration-200"
                         >
                           <Pencil className="w-4 h-4 mr-3" />
                           Edit video
                         </button>
                         <button
-                          onClick={() => handlePostDelete(selectedPost.videoId)}
+                          onClick={() => handlePostDelete(selectedPost.videoId, userid as string)}
                           className="flex items-center w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10 rounded-lg transition-all duration-200"
                         >
                           <Trash2 className="w-4 h-4 mr-3" />

@@ -42,7 +42,7 @@ const CreatePost = () => {
       formdata.delete("tags")
       formdata.append("tags", JSON.stringify(tags));
       
-      const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/videos/upload`, {
+      const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/${params.userid}/videos/upload`, {
         method: "POST",
         body: formdata,
         credentials: "include"
