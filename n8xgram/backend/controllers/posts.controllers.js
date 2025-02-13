@@ -29,6 +29,7 @@ module.exports.uploadVideo = async (req, res) => {
         const videoObject = await vdoClient.videos.create({
             title,
             ...payload,
+            playerId: "pt2OBhuBhqouEklPSIZWmBMP",
             metadata: [{ key: "authorId", value: id }],
         });
 
@@ -44,7 +45,7 @@ module.exports.uploadVideo = async (req, res) => {
             updateUsersPosts.posts.push({ videoId: uploadVideo.videoId });
             await updateUsersPosts.save();
             console.log("done");
-            return res.status(200).json({ updateUsersPosts, message: "success" });
+            return res.status(200).json({message: "success" });
         }
     } catch (error) {
         console.log(error);
