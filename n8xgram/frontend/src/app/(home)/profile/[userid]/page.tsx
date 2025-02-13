@@ -181,7 +181,13 @@ const UserProfileClient = () => {
                 <div className="group relative w-fit">
                   <EllipsisVertical
                     className="cursor-pointer hover:text-yellow-500 transition-colors duration-200"
-                    onClick={() => { togglePostActions ? setTogglePostActions(false) : setTogglePostActions(true) }}
+                    onClick={() => {
+                      if (togglePostActions) {
+                        setTogglePostActions(false)
+                      } else {
+                        setTogglePostActions(true)
+                      }
+                    }}
                   />
                   <div className={`${togglePostActions ? "block" : "hidden"}`}>
                     <div className="absolute top-full right-0 mt-2 w-48 rounded-xl bg-zinc-800/90 backdrop-blur-sm border border-zinc-700/50 shadow-xl transform transition-all duration-200 ease-out scale-95 group-hover:scale-100">
