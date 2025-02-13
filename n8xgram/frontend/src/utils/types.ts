@@ -5,7 +5,15 @@ export interface PostAssets {
 }
 
 export interface VideoPost {
+    videoId: string;
+    title: string;
+    description: string;
     assets: PostAssets;
+    author: {
+        _id: string,
+        username: string,
+        image: string
+    }
 }
 
 export interface UserT {

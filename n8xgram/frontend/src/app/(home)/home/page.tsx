@@ -1,7 +1,7 @@
 "use client";
 
 import FollowBtn from '@/components/followbtn';
-import { Camera, Heart, PlaneIcon } from 'lucide-react';
+import { Camera, Heart, Send } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -24,25 +24,25 @@ const HomePage = () => {
   const [data, setData] = useState<HomeVdoListIface[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchData = async () => {
+    try {
+      const req = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/videos`, {
+        method: "POST",
+        body: JSON.stringify({ page: 1 }),
+        cache: "no-store",
+      });
+
+      if (!req.ok) throw new Error("Failed to fetch videos.");
+      const result = await req.json();
+      console.log(result);
+
+      setData(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const req = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/videos`, {
-          method: "POST",
-          body: JSON.stringify({ page: 1 }),
-          cache: "no-store",
-        });
-
-        if (!req.ok) throw new Error("Failed to fetch videos.");
-        const result = await req.json();
-        console.log(result);
-
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong");
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -68,19 +68,19 @@ const HomePage = () => {
                   </>
                 }
               </div>
-              <div className="w-[520px] h-fit pb-2">
-                <div className="w-full h-[520px] bg-zinc-600">
+              <div className="sm:w-[520px] w-full h-fit pb-2">
+                <div className="w-full sm:h-[600px] h-[400px] bg-zinc-600">
                   <iframe
                     src={video.assets.player}
                     width="100%"
                     height="100%"
-                    frameBorder="0"
                     allowFullScreen
                   />
-                </div>              <div className="py-1">
+                </div>              
+                <div className="py-1">
                   <div className="flex items-center gap-3 py-2">
                     <Heart />
-                    <PlaneIcon />
+                    <Send />
                   </div>
                   <div className="font-medium">{video.title}</div>
                   <p className="text-sm">{video.description}</p>

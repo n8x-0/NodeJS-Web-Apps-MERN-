@@ -1,13 +1,14 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import { Camera, Grid, Settings, X } from "lucide-react";
+import { Camera, EllipsisVertical, Grid, Heart, Pencil, Send, Settings, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import Uploadpicbtn from "@/components/profile/uploadpicbtn";
 import { useParams, useRouter } from "next/navigation";
 import LoadingProfile from "@/components/profile/loadingProfile";
 import { sessionCont } from "@/context/session";
 import { UserT, VideoPost } from "@/utils/types";
+import { handlePostDelete, handlePostEdit } from "@/utils/posts/postactions";
 
 const UserProfileClient = () => {
   const router = useRouter();
@@ -15,6 +16,7 @@ const UserProfileClient = () => {
   const [userdata, setUserdata] = useState<UserT | null>(null);
   const [userPosts, setUsersPosts] = useState<VideoPost[] | null>(null);
   const [selectedPost, setSelectedPost] = useState<VideoPost | null>(null);
+  const [togglePostActions, setTogglePostActions] = useState<boolean>(false);
   const session = useContext(sessionCont);
 
   const fetchData = async () => {
@@ -168,20 +170,60 @@ const UserProfileClient = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute top-2 right-2 text-white text-xl"
+              className="absolute top-7 left-7 text-white text-xl"
               onClick={() => setSelectedPost(null)}
             >
               <X />
             </button>
-            <div className="sm:w-[560px] sm:h-[315px] w-full">
-              <iframe
-                src={selectedPost.assets.player}
-                className="w-full h-full rounded-lg"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+
+            <div key={selectedPost.videoId} className="sm:w-[520px] w-full h-fit">
+              <div className="justify-end p-3 border-zinc-700 border rounded-t-2xl flex items-center gap-2 text-sm w-full">
+                <div className="group relative w-fit">
+                  <EllipsisVertical
+                    className="cursor-pointer hover:text-yellow-500 transition-colors duration-200"
+                    onClick={() => { togglePostActions ? setTogglePostActions(false) : setTogglePostActions(true) }}
+                  />
+                  <div className={`${togglePostActions ? "block" : "hidden"}`}>
+                    <div className="absolute top-full right-0 mt-2 w-48 rounded-xl bg-zinc-800/90 backdrop-blur-sm border border-zinc-700/50 shadow-xl transform transition-all duration-200 ease-out scale-95 group-hover:scale-100">
+                      <div className="p-1.5">
+                        <button
+                          onClick={() => handlePostEdit(selectedPost.videoId)}
+                          className="flex items-center w-full px-4 py-2.5 text-sm text-zinc-300 hover:text-yellow-500 hover:bg-zinc-700/50 rounded-lg transition-all duration-200"
+                        >
+                          <Pencil className="w-4 h-4 mr-3" />
+                          Edit video
+                        </button>
+                        <button
+                          onClick={() => handlePostDelete(selectedPost.videoId)}
+                          className="flex items-center w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10 rounded-lg transition-all duration-200"
+                        >
+                          <Trash2 className="w-4 h-4 mr-3" />
+                          Delete video
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>              </div>
+              <div className="pb-2 border-zinc-700 border rounded-xl rounded-t-none">
+                <div className="w-full sm:h-[500px] h-[400px] bg-zinc-600">
+                  <iframe
+                    src={selectedPost.assets.player}
+                    width="100%"
+                    height="100%"
+                    allowFullScreen
+                  />
+                </div>
+                <div className="py-1 px-3 border-t border-zinc-500">
+                  <div className="flex items-center gap-3 py-2">
+                    <Heart />
+                    <Send />
+                  </div>
+                  <div className="font-medium">{selectedPost.title}</div>
+                  <p className="text-sm">{selectedPost.description}</p>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
       )}

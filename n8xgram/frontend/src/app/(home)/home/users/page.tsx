@@ -13,7 +13,6 @@ const UsersPage = () => {
   const currUserId = session?.userSession?._id
 
   const fetchUsers = async () => {
-    if (currUserId)
       try {
         const req = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/${currUserId}/allusers`, {
           method: "GET",

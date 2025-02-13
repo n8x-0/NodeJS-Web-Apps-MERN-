@@ -18,14 +18,13 @@ module.exports.uploadVideo = async (req, res) => {
         title = file.originalname;
     }
 
-    let payload = {description, tags}
-    if(!description) delete payload.description
-    if(!tags || tags.length == 0) delete payload.tags
+    let payload = { description, tags }
+    if (!description) delete payload.description
+    if (!tags || tags.length == 0 || tags[0] === '') delete payload.tags
 
+    console.log(payload);
 
     try {
-        console.log("begin==============: ", file);
-
         const videoObject = await vdoClient.videos.create({
             title,
             ...payload,
@@ -33,22 +32,30 @@ module.exports.uploadVideo = async (req, res) => {
             metadata: [{ key: "authorId", value: id }],
         });
 
-        const resolvedPath = path.resolve(file.destination, file.path);
+        const resolvedPath = path.resolve(file.destination, file.filename);
         console.log("Resolved file path:", resolvedPath);
-
-        const uploadVideo = await vdoClient.videos.upload(videoObject.videoId, resolvedPath);
+        console.log(file.path);
+        
+        const uploadVideo = await vdoClient.videos.upload(videoObject.videoId, file.path);
         console.log("vdo: =======", uploadVideo);
 
         if (uploadVideo) {
-            await dbconnect();
-            const updateUsersPosts = await userModel.findById(id);
-            updateUsersPosts.posts.push({ videoId: uploadVideo.videoId });
-            await updateUsersPosts.save();
-            console.log("done");
-            return res.status(200).json({message: "success" });
+            try {
+                await dbconnect();
+                const updateUsersPosts = await userModel.findById(id);
+                updateUsersPosts.posts.push({ videoId: uploadVideo.videoId });
+                await updateUsersPosts.save();
+
+                return res.status(200).json({ message: "success" });
+            } catch (error) {
+                console.log(error);
+                await vdoClient.videos.delete(videoObject.videoId)
+                return res.status(500).json({ error: "Something went wrong" });
+            }
         }
     } catch (error) {
         console.log(error);
+        await vdoClient.videos.delete(videoObject.videoId)
         return res.status(500).json({ error: "Something went wrong" });
     }
 };
@@ -96,5 +103,40 @@ module.exports.getAllvideos = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "cannot get videos at the momment !", message: error })
+    }
+}
+
+module.exports.editVideoDetails = async (req, res) => {
+    const body = req.body
+
+    if (!body.videoId) {
+        return res.status(400).json({ error: "Video Id is required." })
+    }
+
+    const payload = {
+        ...body
+    }
+    console.log(payload);
+
+    try {
+        const update = vdoClient.videos.update(body.videoId, payload)
+        return res.status(200).json(update)
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ error: "something went wrong", error })
+    }
+}
+
+module.exports.deleteVideo = async (req, res) => {
+    const vdoId = req.body.videoId
+    console.log(vdoId);
+    if (vdoId) {
+        return res.status(400).json({ error: "Cannot delete your post at the moment" })
+    }
+    try {
+        await vdoClient.videos.delete(vdoId)
+        return res.status(200).json({ message: "sucess" })
+    } catch (error) {
+        return res.status(500).json({ error: "Something went wrong", details: error })
     }
 }
