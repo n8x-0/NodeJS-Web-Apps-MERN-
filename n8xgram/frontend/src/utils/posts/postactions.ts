@@ -20,5 +20,5 @@ export const handlePostDelete = async (videoId: string, userid: string) => {
 }
 
 export const handlePostEdit = (videoId: string, userid: string) => {
-    console.log(videoId);
+    console.log(videoId, userid);
 }
