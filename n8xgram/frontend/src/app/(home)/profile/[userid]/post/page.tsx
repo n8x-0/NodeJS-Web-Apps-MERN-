@@ -42,11 +42,14 @@ const CreatePost = () => {
       formdata.delete("tags")
       formdata.append("tags", JSON.stringify(tags));
 
+      console.log(formdata.get("file"));
+      
       const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/videos/upload`, {
         method: "POST",
         body: formdata,
         credentials: "include"
       });
+
       const res = await data.json();
       if (res.status == 400) {
         setError("No file to upload")

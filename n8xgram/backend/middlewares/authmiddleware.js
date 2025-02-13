@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken")
 
 module.exports.authMiddleware = async ( req, res, next ) => {
     const {userid} = req.params
+    
     const token = req.cookies.session_token
     if(!token){
         return res.status(401).json({error: "No session found"})
