@@ -5,11 +5,12 @@ const sessionUpdate = (updatedUserData, res) => {
 
     try {
         const token = jwt.sign({ _id, username, email, image }, process.env.JWT_SECRET)
-        
+        const isProduction = process.env.NODE_ENV === "production"
         res.cookie("session_token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "None" : "lax",
+            secure: isProduction,
+            sameSite: isProduction ? "None" : "lax",
+            domain: isProduction ? "n8xgram.vercel.app" : undefined,
             path: "/",
         })
     } catch (error) {
