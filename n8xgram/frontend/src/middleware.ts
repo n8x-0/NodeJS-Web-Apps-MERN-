@@ -5,7 +5,8 @@ import { jwtVerify } from 'jose'
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
 export async function middleware(request: NextRequest) {
     const token = request.cookies.get("session_token")?.value
-
+    console.log(token);
+    
     if (!token) {
         return NextResponse.redirect(new URL('/', request.url))
     }
