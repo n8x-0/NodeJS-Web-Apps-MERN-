@@ -1,10 +1,12 @@
 "use client";
 
 import FollowBtn from '@/components/followbtn';
+import { sessionCont } from '@/context/session';
 import { Camera, ChevronLeft, ChevronRight, Heart, Send } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useContext, useEffect, useState } from 'react';
 
 interface HomeVdoListIface {
   videoId: string;
@@ -21,6 +23,12 @@ interface HomeVdoListIface {
 }
 
 const HomePage = () => {
+  const session = useContext(sessionCont)
+  const router = useRouter()
+
+  if(!session?.userSession){
+    router.push('/')
+  }
   const [data, setData] = useState<HomeVdoListIface[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);

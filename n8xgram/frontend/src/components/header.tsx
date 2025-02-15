@@ -7,9 +7,7 @@ import { useContext } from 'react';
 
 const Header = () => {
     const session = useContext(sessionCont)
-
-    const setSession = () => session?.userSession
-    const authData = setSession()
+    const authData = session?.userSession
 
     const icons = [
         { icon: Home, link: "/home" },
@@ -46,7 +44,7 @@ const Header = () => {
                                     </Link>
                                 )
                             })}
-                           
+
                             <Link href={`/profile/${authData._id}`} className="h-8 w-8 rounded-full cursor-pointer overflow-hidden ring-2 ring-yellow-400">
                                 <Image
                                     src={authData.image}

@@ -10,10 +10,14 @@ import { sessionCont } from '@/context/session';
 import { UserT, VideoPost } from '@/utils/types';
 
 const UserProfileDisplayPage = () => {
+    const session = useContext(sessionCont)
     const router = useRouter()
+
+    if (!session?.userSession) {
+        router.push('/')
+    }
     const { usersid } = useParams()
     const [userdata, setUserdata] = useState<UserT | null>(null);
-    const session = useContext(sessionCont)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,7 +61,7 @@ const UserProfileDisplayPage = () => {
                         className="w-32 h-32 rounded-full object-cover border-2 border-gray-200"
                     />
                     <button className="absolute bottom-0 right-0 bg-yellow-500 p-2 rounded-full text-white">
-                        <Uploadpicbtn userid={usersid as string} userData={userdata}/>
+                        <Uploadpicbtn userid={usersid as string} userData={userdata} />
                     </button>
                 </div>
 

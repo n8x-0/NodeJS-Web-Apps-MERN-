@@ -7,9 +7,13 @@ import Uploadpicbtn from "@/components/profile/uploadpicbtn";
 import { sessionCont } from "@/context/session";
 
 const ProfileEditPage = () => {
-    const router = useRouter();
+    const session = useContext(sessionCont)
+    const router = useRouter()
+
+    if (!session?.userSession) {
+        router.push('/')
+    }
     const { userid } = useParams();
-    const session = useContext(sessionCont);
     const [userData, setUserData] = useState({
         username: "",
         bio: "",

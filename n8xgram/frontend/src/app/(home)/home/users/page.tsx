@@ -3,13 +3,19 @@ import FollowBtn from "@/components/followbtn"
 import { sessionCont } from "@/context/session"
 import { UserT } from "@/utils/types"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { useContext, useEffect, useState } from "react"
 
 
 const UsersPage = () => {
+  const session = useContext(sessionCont)
+  const router = useRouter()
+
+  if(!session?.userSession){
+    router.push('/')
+  }
   const [error, setError] = useState<string | null>(null)
   const [users, setUsers] = useState<UserT[]>([])
-  const session = useContext(sessionCont)
   const currUserId = session?.userSession?._id
 
   const fetchUsers = async () => {

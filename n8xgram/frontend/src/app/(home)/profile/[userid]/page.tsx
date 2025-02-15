@@ -12,14 +12,19 @@ import { handlePostDelete, handlePostEdit } from "@/utils/posts/postactions";
 import Link from "next/link";
 
 const UserProfileClient = () => {
-  const router = useRouter();
+  const session = useContext(sessionCont)
+  const router = useRouter()
+
+  if(!session?.userSession){
+    router.push('/')
+  }
+  
   const { userid } = useParams();
   const [userdata, setUserdata] = useState<UserT | null>(null);
   const [userPosts, setUsersPosts] = useState<VideoPost[] | null>(null);
   const [selectedPost, setSelectedPost] = useState<VideoPost | null>(null);
   const [togglePostActions, setTogglePostActions] = useState<boolean>(false);
   const [loadingDelete, setLoadingDelete] = useState<boolean>(false);
-  const session = useContext(sessionCont);
 
   const fetchData = async () => {
     try {

@@ -6,9 +6,14 @@ import { useParams, useRouter } from "next/navigation";
 import { useRef, useState, ChangeEvent, useContext } from "react";
 
 const CreatePost = () => {
-  const router = useRouter()
-  const params = useParams();
   const session = useContext(sessionCont)
+  const router = useRouter()
+
+  if(!session?.userSession){
+    router.push('/')
+  }
+
+  const params = useParams();
   const fileRef = useRef<HTMLInputElement>(null);
   const [videoPreview, setVideoPreview] = useState<string>("");
   const [error, setError] = useState<string | null>(null);

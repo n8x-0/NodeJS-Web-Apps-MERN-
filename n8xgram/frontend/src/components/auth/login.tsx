@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { sessionCont } from "@/context/session";
 
 const Login = () => {
+    const session = useContext(sessionCont)
     const router = useRouter()
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
@@ -14,7 +15,6 @@ const Login = () => {
         email: "",
         password: "",
     })
-    const session = useContext(sessionCont)
 
     useEffect(() => {
         if (session?.userSession) {
