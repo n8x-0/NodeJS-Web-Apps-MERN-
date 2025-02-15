@@ -8,7 +8,7 @@ const path = require("path")
 const storage = multer.memoryStorage();
 const imgUpload = multer({ storage }).single('file');
 
-const videoUpload = multer({ dest: "upload" }).single('file');
+const videoUpload = multer({ dest: "/tmp" }).single('file');
 
 //user routes
 router.get("/", userProfile)
