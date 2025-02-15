@@ -17,15 +17,15 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE"],
     origin: ["https://n8xgram.vercel.app", "http://localhost:3000"],
     credentials: true,
-}));
+}))
 
 app.use("/auth", authRoutes)
 app.use("/user/:userid", authMiddleware, userRoutes)
 app.use("/videos", videoRoutes)
 app.get("/session/getsession", getSession)
 
-// app.listen("3001", () => {
-//     console.log("server is running on \nhttp://localhost:3001");
-// })
+app.listen("3001", () => {
+    console.log("server is running on \nhttp://localhost:3001");
+})
 
 module.exports = app

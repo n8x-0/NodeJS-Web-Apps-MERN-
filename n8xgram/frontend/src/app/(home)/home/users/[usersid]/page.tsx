@@ -21,7 +21,7 @@ const UserProfileDisplayPage = () => {
                 const user = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/${usersid}`, {
                     method: "GET",
                     credentials: "include",
-                    cache: "no-store"
+                    cache: "no-cache"
                 });
                 if (user.status === 401) {
                     router.push("/register");

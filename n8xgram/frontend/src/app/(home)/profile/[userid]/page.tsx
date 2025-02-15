@@ -28,7 +28,7 @@ const UserProfileClient = () => {
         {
           method: "GET",
           credentials: "include",
-          cache: "no-store",
+          cache: "no-cache",
         }
       );
       if (user.status === 401) {

@@ -4,6 +4,7 @@ export const getSession = async () => {
             method: "GET",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
+            cache: "default"
         })
         const data = await req.json()
         if(data){

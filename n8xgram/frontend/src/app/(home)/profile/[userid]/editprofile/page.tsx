@@ -69,10 +69,10 @@ const ProfileEditPage = () => {
                 method: "GET",
                 credentials: "include",
             });
-            router.push("/");
         } catch (error) {
             console.error(error);
         }
+        router.push("/");
     };
 
     return (
@@ -108,16 +108,16 @@ const ProfileEditPage = () => {
                         >
                             {loading ? "Updating..." : "Update Profile"}
                         </button>
-                        <button
-                            type="button"
-                            onClick={handleLogout}
-                            className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                        >
-                            <LogOut size={18} />
-                            Sign Out
-                        </button>
                     </div>
                 </form>
+                <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                >
+                    <LogOut size={18} />
+                    Sign Out
+                </button>
             </div>
         </div>
     );

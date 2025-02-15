@@ -27,7 +27,7 @@ const Uploadpicbtn = ({ userid, userData }: { userid: string, userData: { userna
                 method: "POST",
                 body: formdata,
                 credentials: "include",
-                cache: "no-store"
+                cache: "no-cache"
             })
             const data = await res.json()
             console.log(data);
@@ -42,16 +42,13 @@ const Uploadpicbtn = ({ userid, userData }: { userid: string, userData: { userna
 
     return (
         <div className="relative">
-            {
-                userData ?
-                    <Image
-                        width={600}
-                        height={600}
-                        src={userData.image}
-                        alt={userData.username}
-                        className="w-32 h-32 rounded-full object-cover border-2 border-gray-200"
-                    /> : ""
-            }
+            <Image
+                width={600}
+                height={600}
+                src={userData.image}
+                alt={userData.username}
+                className="w-32 h-32 rounded-full object-cover border-2 border-gray-200"
+            />
             <button className="absolute bottom-0 right-0 bg-yellow-500 p-2 rounded-full text-white">
                 <div onClick={() => chosefile.current?.click()}>
                     <Camera size={16} className="text-black" />

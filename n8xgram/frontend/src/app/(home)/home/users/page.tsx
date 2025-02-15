@@ -18,7 +18,7 @@ const UsersPage = () => {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          cache: "no-store"
+          cache: "no-cache"
         })
         const data = await req.json()
         if (req.ok) {

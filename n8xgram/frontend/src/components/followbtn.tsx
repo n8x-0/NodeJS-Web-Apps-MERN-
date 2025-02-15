@@ -22,7 +22,7 @@ const FollowBtn = ({ user, currUserId, style }: { user: UserT, currUserId?: stri
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          cache: "no-store",
+          cache: "no-cache",
         }
       );
       if (req.ok) {
@@ -35,6 +35,10 @@ const FollowBtn = ({ user, currUserId, style }: { user: UserT, currUserId?: stri
       setFollowLoading(null);
     }
   };
+
+  if(!currUserId){
+    return <></>
+  }
 
   return (
     <button

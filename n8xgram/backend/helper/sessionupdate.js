@@ -5,6 +5,7 @@ const sessionUpdate = (updatedUserData, res) => {
 
     try {
         const token = jwt.sign({ _id, username, email, image }, process.env.JWT_SECRET)
+        
         res.cookie("session_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
