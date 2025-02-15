@@ -17,6 +17,8 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE"],
     origin: ["https://n8xgram.vercel.app"],
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    exposedHeaders: ["Set-Cookie"],
 }))
 
 app.use("/auth", authRoutes)
