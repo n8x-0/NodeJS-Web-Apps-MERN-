@@ -10,7 +10,6 @@ const sessionUpdate = (updatedUserData, res) => {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? "None" : "lax",
-            domain: isProduction ? "n8xgram.vercel.app" : undefined,
             path: "/",
         })
     } catch (error) {
