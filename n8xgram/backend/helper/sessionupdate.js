@@ -11,7 +11,7 @@ const sessionUpdate = (updatedUserData, res) => {
             secure: isProduction,
             sameSite: isProduction ? "None" : "lax",
             path: "/",
-            domain: "n8xgram.vercel.app",
+            domain: ".n8xgram.vercel.app",
         })
     } catch (error) {
         console.log(error);
