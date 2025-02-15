@@ -29,7 +29,8 @@ module.exports.register = async (req, res) => {
         }
 
         delete newUser._doc.password
-
+        
+        console.log("register seccses");
         return res.status(200).json({ _id: newUser._id, message: "User registered." })
     } catch (error) {
         console.log(error);
@@ -59,6 +60,8 @@ module.exports.login = async (req, res) => {
         if (isUser) {
             sessionUpdate(isUser, res)
         }
+        
+        console.log("login success");
         return res.status(200).json({ _id: isUser._id, message: "Login Succes :)" })
     } catch (error) {
         console.log(error);

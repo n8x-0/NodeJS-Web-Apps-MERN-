@@ -11,6 +11,7 @@ const sessionUpdate = (updatedUserData, res) => {
             secure: isProduction,
             sameSite: isProduction ? "None" : "lax",
             path: "/",
+            
         })
     } catch (error) {
         console.log(error);

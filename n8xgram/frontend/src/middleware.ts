@@ -4,11 +4,18 @@ import { jwtVerify } from 'jose'
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
 export async function middleware(request: NextRequest) {
-    const token = request.cookies.get("session_token")?.value
-    console.log(token);
+    let token
+    token = request.cookies.get("session_token")?.value
+    console.log("middleware says: ",token);
     
     if (!token) {
-        return NextResponse.redirect(new URL('/', request.url))
+        const cookieHeader = request.headers.get("cookie")
+        token = cookieHeader?.split("; ").find((row) => row.startsWith("session_token="))?.split("=")[1];
+        console.log("middleware says headers got: ",token);
+        
+        if(!token){
+            return NextResponse.redirect(new URL('/', request.url))
+        }
     }
 
     try {
