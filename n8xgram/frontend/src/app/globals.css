@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.easedown{
+  animation: inandout 3s ease;
+}
+@keyframes inandout {
+  0%{
+    top: 40%;
+    opacity: 0;
+  }20%{
+    opacity: 1;
+    top: 50%
+  }60%{
+    top: 50%;
+    opacity: 1;
+  }100%{
+    opacity: 0;
+    top: 40%;
+  }
+}
+
+.moveright{
+  animation: moveright 3s ease-in-out;
+}
+@keyframes moveright {
+  0%{
+    left: -4rem;
+  }50%{
+    left: -2rem;
+  }100%{
+    left: -4rem;
+  }
+}
+
+.moveleft{
+  animation: moveleft 3s ease-in-out;
+}
+@keyframes moveleft {
+  0%{
+    right: -4rem;
+  }50%{
+    right: -2rem;
+  }100%{
+    right: -4rem;
+  }
+}
+
+.hideScrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
