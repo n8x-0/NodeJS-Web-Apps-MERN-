@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import ErrorPopup from "../errorpopup";
 import Image from "next/image";
 
-const Uploadpicbtn = ({ userid, userData }: { userid: string, userData: { username: string, image: string } }) => {
+const Uploadpicbtn = ({ userid, userData }: { userid: string, userData: { _id: string, username: string, image: string } }) => {
     const chosefile = useRef<HTMLInputElement>(null)
     const [error, setError] = useState<string | null>(null)
 
@@ -49,12 +49,14 @@ const Uploadpicbtn = ({ userid, userData }: { userid: string, userData: { userna
                 alt={userData.username}
                 className="w-32 h-32 rounded-full object-cover border-2 border-gray-200"
             />
-            <button className="absolute bottom-0 right-0 bg-yellow-500 p-2 rounded-full text-white">
-                <div onClick={() => chosefile.current?.click()}>
-                    <Camera size={16} className="text-black" />
-                    <input type="file" className="hidden" ref={chosefile} onChange={handleChange} />
-                </div>
-            </button>
+            {userid === userData._id &&
+                <button className="absolute bottom-0 right-0 bg-yellow-500 p-2 rounded-full text-white">
+                    <div onClick={() => chosefile.current?.click()}>
+                        <Camera size={16} className="text-black" />
+                        <input type="file" className="hidden" ref={chosefile} onChange={handleChange} />
+                    </div>
+                </button>
+            }
         </div>
     )
 }

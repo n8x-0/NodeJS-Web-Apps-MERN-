@@ -3,21 +3,23 @@ import { sessionCont } from "@/context/session";
 import { uploadVideo } from "@/utils/posts/postactions";
 import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useRef, useState, ChangeEvent, useContext } from "react";
+import { useRef, useState, ChangeEvent, useContext, useEffect } from "react";
 
 const CreatePost = () => {
   const session = useContext(sessionCont)
   const router = useRouter()
-
-  if(!session?.userSession){
-    router.push('/')
-  }
 
   const params = useParams();
   const fileRef = useRef<HTMLInputElement>(null);
   const [videoPreview, setVideoPreview] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false)
+
+  useEffect(()=> {
+    if(!session?.userSession){
+      router.push('/')
+    }
+  }, [])
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

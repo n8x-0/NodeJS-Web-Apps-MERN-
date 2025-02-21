@@ -26,9 +26,6 @@ const HomePage = () => {
   const session = useContext(sessionCont)
   const router = useRouter()
 
-  if(!session?.userSession){
-    router.push('/')
-  }
   const [data, setData] = useState<HomeVdoListIface[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,6 +50,12 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+    if (!session?.userSession) {
+      router.push('/')
+    }
+  }, [session])
+  
+  useEffect(() => {
     fetchData();
   }, [currentPage]);
 
@@ -74,7 +77,7 @@ const HomePage = () => {
                         <p>{video.author.username}</p>
                       </Link>
                     </div>
-                    <FollowBtn user={video.author} style='simple'/>
+                    <FollowBtn user={video.author} classes='bg-transparent text-yellow-400 underline underline-offset-4 hover:text-yellow-300 text-sm'/>
                   </>
                 }
               </div>
@@ -86,7 +89,7 @@ const HomePage = () => {
                     height="100%"
                     allowFullScreen
                   />
-                </div>              
+                </div>
                 <div className="py-1">
                   <div className="flex items-center gap-3 py-2">
                     <Heart />
@@ -111,7 +114,7 @@ const HomePage = () => {
       </div>
 
       <div className="flex justify-center items-center gap-4 mt-6">
-        <button 
+        <button
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
           className="px-4 py-2 bg-white text-black font-medium rounded disabled:opacity-90 disabled:text-zinc-300 disabled:cursor-not-allowed"
@@ -119,7 +122,7 @@ const HomePage = () => {
           <ChevronLeft />
         </button>
         <div className="font-medium">{currentPage}</div>
-        <button 
+        <button
           onClick={() => setCurrentPage(prev => prev + 1)}
           disabled={!data[0]}
           className="px-4 py-2 bg-yellow-400 text-black font-medium rounded disabled:bg-yellow-100 disabled:text-zinc-300 disabled:cursor-not-allowed"
@@ -127,7 +130,7 @@ const HomePage = () => {
           <ChevronRight />
         </button>
       </div>
-      
+
     </div>
   );
 };

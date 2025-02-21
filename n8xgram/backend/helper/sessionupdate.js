@@ -13,7 +13,7 @@ const sessionUpdate = (updatedUserData, res) => {
             path: "/",
         })
     } catch (error) {
-        console.log(error);
+        console.log("err at session update: ", error);
         return res.status(500).json({ error: "User session failed." })
     }
 }

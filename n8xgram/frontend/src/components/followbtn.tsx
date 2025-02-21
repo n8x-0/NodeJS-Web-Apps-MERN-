@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import { sessionCont } from "@/context/session";
 import { UserT } from "@/utils/types";
 
-const FollowBtn = ({ user, currUserId, style }: { user: UserT, currUserId?: string, style: "simple" | "yellow" }) => {
+const FollowBtn = ({ user, currUserId, classes }: { user: UserT, currUserId?: string, classes?: string | ""}) => {
   const session = useContext(sessionCont);
 
   if (!currUserId) {
@@ -44,8 +44,8 @@ const FollowBtn = ({ user, currUserId, style }: { user: UserT, currUserId?: stri
     <button
       onClick={() => user._id !== currUserId && handleFollow(user._id)}
       disabled={user._id !== currUserId ? followLoading === user._id : false}
-      className={`px-6 py-[6px] rounded font-medium transition-colors text-sm text-black ${user._id === currUserId && "hidden"
-        } ${style === "yellow" ? "bg-yellow-500 hover:bg-yellow-400" : "bg-transparent text-yellow-400 underline underline-offset-4 hover:text-yellow-300"}  ${followLoading === user._id ? "opacity-50 cursor-not-allowed" : ""
+      className={`px-6 py-[6px] rounded font-medium transition-colors text-black ${classes} ${user._id === currUserId && "hidden"
+        } ${followLoading === user._id ? "opacity-50 cursor-not-allowed" : ""
         }`}
     >
       {followLoading === user._id ? (

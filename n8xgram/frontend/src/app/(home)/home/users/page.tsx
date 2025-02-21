@@ -3,6 +3,7 @@ import FollowBtn from "@/components/followbtn"
 import { sessionCont } from "@/context/session"
 import { UserT } from "@/utils/types"
 import Image from "next/image"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useContext, useEffect, useState } from "react"
 
@@ -11,9 +12,6 @@ const UsersPage = () => {
   const session = useContext(sessionCont)
   const router = useRouter()
 
-  if(!session?.userSession){
-    router.push('/')
-  }
   const [error, setError] = useState<string | null>(null)
   const [users, setUsers] = useState<UserT[]>([])
   const currUserId = session?.userSession?._id
@@ -37,6 +35,10 @@ const UsersPage = () => {
   }
 
   useEffect(() => {
+    if(!session?.userSession){
+      router.push('/')
+    }
+  
     fetchUsers()
   }, [])
 
@@ -47,7 +49,7 @@ const UsersPage = () => {
       </div>
     )
   }
-
+  
   return (
     <div className="w-[540px] mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">Suggested Users</h1>
@@ -57,7 +59,7 @@ const UsersPage = () => {
           return (
             <div key={user._id} className="border-b shadow p-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
+                <Link href={`/home/users/${user._id}`} className="flex items-center space-x-4">
                   <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden ring-1 ring-yellow-500">
                     {user.image ? (
                       <Image
@@ -77,8 +79,8 @@ const UsersPage = () => {
                     <h3 className="font-semibold">{user.username}</h3>
                     <p className="text-sm text-gray-500">{user.email}</p>
                   </div>
-                </div>
-                <FollowBtn user={user} currUserId={currUserId as string} style="yellow"/>
+                </Link>
+                <FollowBtn user={user} currUserId={currUserId as string} classes="bg-yellow-500 hover:bg-yellow-400 text-sm"/>
               </div>
             </div>
           )

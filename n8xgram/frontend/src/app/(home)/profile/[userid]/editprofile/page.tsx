@@ -10,11 +10,9 @@ const ProfileEditPage = () => {
     const session = useContext(sessionCont)
     const router = useRouter()
 
-    if (!session?.userSession) {
-        router.push('/')
-    }
     const { userid } = useParams();
     const [userData, setUserData] = useState({
+        _id: userid as string,
         username: "",
         bio: "",
         image: ""
@@ -24,13 +22,18 @@ const ProfileEditPage = () => {
     const userSession = session?.userSession
 
     useEffect(() => {
+        if (!userSession) {
+            router.push('/')
+        }
         if (userSession) {
-            const { username, bio, image } = userSession as {
+            const { _id, username, bio, image } = userSession as {
+                _id: string,
                 username: string;
                 bio: string;
                 image: string;
             };
             setUserData({
+                _id,
                 username,
                 bio,
                 image

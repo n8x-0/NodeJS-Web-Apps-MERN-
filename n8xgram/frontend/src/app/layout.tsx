@@ -3,6 +3,7 @@ import Header from "@/components/header";
 import "./globals.css";
 import Sidebar from "@/components/sidebar";
 import SessionProvider from "@/context/session";
+import SEO from "@/components/seo";
 
 export default function RootLayout({
     children,
@@ -12,6 +13,7 @@ export default function RootLayout({
     
     return (
         <html lang="en">
+            <SEO />
             <body className="w-full h-full">
                 <SessionProvider>
                     <Header />

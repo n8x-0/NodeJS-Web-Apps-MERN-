@@ -10,24 +10,69 @@ v2.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME
 })
 
+const cache = {}
+
 module.exports.userProfile = async (req, res) => {
-    const { userid } = req.params
-    try {        
+    const { userid } = req.params;
+    const { specificId } = req.query;    
+
+    if (specificId && cache[specificId]) {
+        console.log("Cache hit for user profile");
+        return res.status(200).json(cache[specificId])
+    } else if (!specificId && cache[userid]) {
+        console.log("Cache hit for others profile");
+        return res.status(200).json(cache[userid])
+    }
+
+    try {
         await dbconnect()
-        const user = await userModel.findById(userid)
-        delete user._doc.password
-        return res.status(200).json(user)
+        if (!specificId) {
+            const user = await userModel.findById(userid)
+            delete user._doc.password
+            console.log("hit db for user profile");
+
+            if (user) {
+                cache[userid] = user
+                setTimeout(() => {
+                    delete cache[userid]
+                }, 60000)
+            }
+
+            return res.status(200).json(user)
+        } else {
+            const user = await userModel.findById(specificId)
+            // delete user._doc.password
+            console.log("hit db for others profile");
+
+            if (user) {
+                cache[specificId] = user
+                setTimeout(() => {
+                    delete cache[specificId]
+                }, 60000)
+            }
+
+            return res.status(200).json(user)
+        }
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: "Something went wrong" })
     }
 }
 
 module.exports.getAllUsers = async (req, res) => {
+    if(cache.allusers){
+        console.log("cache hit for all users");
+        return res.status(200).json(cache.allusers)
+    }
     try {
         await dbconnect()
         const allusers = await userModel.find({})
-        allusers.forEach((data)=> delete data._doc.password)
-        
+        console.log("db hit for all users");
+        allusers.forEach((data) => delete data._doc.password)
+        cache.allusers = allusers
+        setTimeout(() => {
+            delete cache.allusers
+        }, 120000)
         return res.status(200).json(allusers)
     } catch (error) {
         return res.status(500).json({ error: "Error fetching users" })
@@ -41,10 +86,19 @@ module.exports.deleteUserById = async (req, res) => {
         return res.status(400).json({ error: "User not found" })
     }
 
+    if (cache[deletingThisUserId]) {
+        return res.status(200).json({ message: "Your account has been deleted successfully." })
+    }
+
     try {
         await dbconnect()
         await userModel.findByIdAndDelete({ _id: userid })
-        return res.status(200).json({message: "Your account has been deleted successfully."})
+        const deletingThisUserId = userid
+        cache[deletingThisUserId] = true
+        setTimeout(() => {
+            delete cache[deletingThisUserId]
+        }, 9000)
+        return res.status(200).json({ message: "Your account has been deleted successfully." })
     } catch (error) {
         return res.status(500).json({ error: "Error deleting your account" })
     }
@@ -138,8 +192,8 @@ module.exports.uploadProfileImage = async (req, res) => {
             try {
                 await dbconnect()
                 const updatedUser = await userModel.findByIdAndUpdate(userid, { image: secure_url }, { new: true })
-                
-                if(updatedUser){
+
+                if (updatedUser) {
                     sessionUpdate(updatedUser, res)
                 }
 
