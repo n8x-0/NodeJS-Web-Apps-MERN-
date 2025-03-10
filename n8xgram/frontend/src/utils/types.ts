@@ -41,7 +41,7 @@ export type CloudinaryUploadResponse = {
     bytes: number
 }
 
-export type PostType = CloudinaryUploadResponse & {title: String, description: String, tags: string}
+export type PostType = CloudinaryUploadResponse & {title: string, description: string, tags: string}
 
 
 export interface VideoPost {

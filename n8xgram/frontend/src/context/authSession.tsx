@@ -1,6 +1,5 @@
 "use client";
 import { createContext, useState, useEffect, ReactNode } from "react";
-import { useRouter } from "next/navigation";
 
 export interface AuthSession {
   _id: string;
@@ -22,7 +21,6 @@ export const AuthSessionContext = createContext<AuthContextType | undefined>(und
 export default function AuthSessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<AuthSession | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const router = useRouter();
 
   const fetchSession = async () => {
     setLoading(true);

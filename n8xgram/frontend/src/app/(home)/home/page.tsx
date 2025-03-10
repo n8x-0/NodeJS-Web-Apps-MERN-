@@ -9,31 +9,24 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react';
 
-interface HomeVdoListIface {
-  videoId: string;
-  assets: { player: string };
-  title: string;
-  description: string;
-  author: {
-    _id: string;
-    username: string;
-    image: string;
-    followers: string[];
-    followings: string[];
-  };
+interface videosResponseObj {
+  posts: VideoPost[],
+  currentPage: number,
+  totalPages: number,
+  totalCount: number
 }
 
 const HomePage = () => {
-  const { session, loading } = useContext(AuthSessionContext) as { session: {_id: string} | null, loading: boolean }
+  const { session, loading } = useContext(AuthSessionContext) as { session: { _id: string } | null, loading: boolean }
   const router = useRouter()
-  
+
   useEffect(() => {
     if (!loading && session === null) {
       router.push('/')
     }
   }, [session])
 
-  const [data, setData] = useState<any>();
+  const [data, setData] = useState<videosResponseObj>();
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 

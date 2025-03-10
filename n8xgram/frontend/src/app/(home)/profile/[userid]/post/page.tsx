@@ -1,8 +1,8 @@
 "use client";
 import { AuthSessionContext } from "@/context/authSession";
 import { uploadVideo } from "@/utils/posts/postactions";
-import { useParams, useRouter } from "next/navigation";
-import { useRef, useState, ChangeEvent, useContext, useEffect } from "react";
+import {  useRouter } from "next/navigation";
+import { useState, ChangeEvent, useContext, useEffect } from "react";
 import { CldUploadWidget } from 'next-cloudinary';
 import { CloudinaryUploadResponse } from "@/utils/types";
 
@@ -16,12 +16,7 @@ const CreatePost = () => {
     }
   }, [session, router]);
 
-  const params = useParams();
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [videoPreview, setVideoPreview] = useState<string>("");
   const [error, setError] = useState<string | null>("Please fill the required fields");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [resource, setResource] = useState<{ secure_url: string }>({ secure_url: "" });
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -122,14 +117,10 @@ const CreatePost = () => {
                 return (
                   <button
                     onClick={() => open()}
-                    disabled={loading || (error !== null)}
-                    className={`w-full p-2 mt-6 ${loading || error ? "bg-zinc-300 text-zinc-100" : "bg-yellow-500 text-black"} transition-all font-medium rounded`}
+                    disabled={error !== null}
+                    className={`w-full p-2 mt-6 ${error ? "bg-zinc-300 text-zinc-100" : "bg-yellow-500 text-black"} transition-all font-medium rounded`}
                   >
-                    {loading ? (
-                      <p className="m-auto animate-spin w-6 h-6 border rounded-full border-black border-t-yellow-800"></p>
-                    ) : (
-                      "Upload post"
-                    )}
+                    Upload post
                   </button>
                 );
               }}
