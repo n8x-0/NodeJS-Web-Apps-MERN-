@@ -1,13 +1,13 @@
 "use client";
 import { useContext, useState } from "react";
-import { sessionCont } from "@/context/session";
+import { AuthSessionContext } from "@/context/authSession";
 import { UserT } from "@/utils/types";
 
 const FollowBtn = ({ user, currUserId, classes }: { user: UserT, currUserId?: string, classes?: string | ""}) => {
-  const session = useContext(sessionCont);
+  const session = useContext(AuthSessionContext);
 
   if (!currUserId) {
-    currUserId = session?.userSession?._id as string;
+    currUserId = session?.session?._id as string;
   }
 
   const [isFollowing, setIsFollowing] = useState(!!user.followers?.includes(currUserId));

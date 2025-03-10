@@ -1,22 +1,42 @@
-const jwt = require("jsonwebtoken")
+const { verifyToken } = require("../helper/generateTokens")
+const dbUsermodel = require("../db/db.usermodel")
+const { dbconnect } = require("../db/db.connection")
 
-module.exports.authMiddleware = async ( req, res, next ) => {
-    const {userid} = req.params
-    const token = req.cookies.session_token
-
-    console.log("\n\nmiddleware says \n=====================================\n", userid, "\n=====================================\n", token ? "token available" : "no token" , "\n=====================================\n");
+const isLoggedIn = async (req, res, next) => {
+    const { session_token } = req.cookies
     
-    if(!token){
-        return res.status(401).json({error: "No session found"})
+    if (!session_token) {
+        return res.status(401).json("unauthorized")
     }
-    const session = jwt.verify(token, process.env.JWT_SECRET)
-    if(!session){
-        console.log("no session found or session verification failed");
-        return res.status(401).json({error: "Invalid session"})
+    try {
+        const {payload} = await verifyToken(session_token)
+        req.payload = payload
+        
+        next()
+    } catch (error) {
+        console.log(error);
+        res.status(500).json("Session has expired")
     }
-    if(session._id !== userid){
-        console.log("session id isnt equal to userid");
-        return res.status(401).json({error: "Invalid session"})
+}
+
+const currUser = async (req, res,next) => {
+    const { payload } = req
+    
+    try {
+        await dbconnect()
+        const user = await dbUsermodel.findById(payload).select("-password")
+        if (!user) {
+            return res.status(404).json("Unknown user, not found")
+        }
+        
+        req.user = user
+        next()
+    } catch (error) {
+        res.status(500).json("Session went wrong")
     }
-    next()
+}
+
+module.exports = {
+    isLoggedIn,
+    currUser
 }

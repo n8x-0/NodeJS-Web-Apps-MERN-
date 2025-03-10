@@ -6,7 +6,10 @@ const userModel = new mongoose.Schema({
     password: { type: String, required: true },
     image: { type: String, default: "https://i.pinimg.com/1200x/2c/47/d5/2c47d5dd5b532f83bb55c4cd6f5bd1ef.jpg" },
     bio: {type: String, default: "New n8xi pixi user"},
-    posts: [{type: String}],
+    posts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
     followings: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }]
 }, { timestamps: true })

@@ -8,7 +8,6 @@ const path = require("path")
 const storage = multer.memoryStorage();
 const imgUpload = multer({ storage }).single('file');
 
-const videoUpload = multer({ dest: "/tmp" }).single('file');
 
 //user routes
 router.get("/", userProfile)
@@ -20,7 +19,6 @@ router.put("/follow/:tofollow", followController)
 router.post("/updprofimg", imgUpload, uploadProfileImage)
 
 // video or post
-router.post("/videos/upload", videoUpload, uploadVideo)
 router.post("/videos/update", editVideoDetails)
 router.post("/videos/delete", deleteVideo)
 

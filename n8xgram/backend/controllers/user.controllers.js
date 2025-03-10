@@ -2,7 +2,7 @@ const { dbconnect } = require("../db/db.connection")
 const userModel = require("../db/db.usermodel")
 const { v2 } = require("cloudinary");
 const { Readable } = require("stream");
-const sessionUpdate = require("../helper/sessionupdate")
+const { generateToken } = require("../helper/generateTokens");
 
 v2.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
@@ -14,7 +14,7 @@ const cache = {}
 
 module.exports.userProfile = async (req, res) => {
     const { userid } = req.params;
-    const { specificId } = req.query;    
+    const { specificId } = req.query;
 
     if (specificId && cache[specificId]) {
         console.log("Cache hit for user profile");
@@ -60,7 +60,7 @@ module.exports.userProfile = async (req, res) => {
 }
 
 module.exports.getAllUsers = async (req, res) => {
-    if(cache.allusers){
+    if (cache.allusers) {
         console.log("cache hit for all users");
         return res.status(200).json(cache.allusers)
     }
@@ -130,10 +130,12 @@ module.exports.updateUser = async (req, res) => {
         await dbconnect()
         const updatedUserData = await userModel.findByIdAndUpdate({ _id: body.id }, { ...body }, { new: true })
 
-        if (updatedUserData) {
-            sessionUpdate(updatedUserData, res)
-        }
-        return res.status(200).json(updatedUserData)
+        const token = await generateToken(updatedUserData._id)
+
+        res
+            .status(200)
+            .cookie("session_token", token)
+            .json(updatedUserData)
     } catch (error) {
         return res.status(500).json({ error: "Something went wrong." })
     }
@@ -193,11 +195,12 @@ module.exports.uploadProfileImage = async (req, res) => {
                 await dbconnect()
                 const updatedUser = await userModel.findByIdAndUpdate(userid, { image: secure_url }, { new: true })
 
-                if (updatedUser) {
-                    sessionUpdate(updatedUser, res)
-                }
+                const token = await generateToken(updatedUser._id)
 
-                return res.status(200).json({ message: "Profile picture has been updated." })
+                res
+                    .status(200)
+                    .cookie("session_token", token)
+                    .json({ message: "Profile picture has been updated." })
             } catch (error) {
                 console.log("Err updatinf user image in db: ", error);
                 return res.status(400).json({ error: "An error occured uploading your image, try again!" })

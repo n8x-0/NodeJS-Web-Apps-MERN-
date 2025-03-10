@@ -4,10 +4,10 @@ import { useContext, useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { LogOut } from "lucide-react";
 import Uploadpicbtn from "@/components/profile/uploadpicbtn";
-import { sessionCont } from "@/context/session";
+import { AuthSessionContext } from "@/context/authSession";
 
 const ProfileEditPage = () => {
-    const session = useContext(sessionCont)
+    const { session } = useContext(AuthSessionContext) as { session: { _id: string, username: string, image: string, bio: string } };
     const router = useRouter()
 
     const { userid } = useParams();
@@ -19,19 +19,12 @@ const ProfileEditPage = () => {
     });
     const [loading, setLoading] = useState(false);
 
-    const userSession = session?.userSession
-
     useEffect(() => {
-        if (!userSession) {
+        if (!session) {
             router.push('/')
         }
-        if (userSession) {
-            const { _id, username, bio, image } = userSession as {
-                _id: string,
-                username: string;
-                bio: string;
-                image: string;
-            };
+        if (session) {
+            const { _id, username, bio, image } = session
             setUserData({
                 _id,
                 username,
@@ -39,7 +32,7 @@ const ProfileEditPage = () => {
                 image
             });
         }
-    }, [userSession]);
+    }, [session]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -62,7 +55,6 @@ const ProfileEditPage = () => {
             if (!res.ok) {
                 throw new Error("Failed to update profile");
             }
-            await session?.getUserSession();
             router.push(`/home/profile/${userid}`);
         } catch (error) {
             console.error(error);

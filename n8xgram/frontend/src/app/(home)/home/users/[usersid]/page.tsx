@@ -6,14 +6,14 @@ import Image from "next/image";
 import Uploadpicbtn from "@/components/profile/uploadpicbtn";
 import { useParams, useRouter } from "next/navigation";
 import LoadingProfile from "@/components/profile/loadingProfile";
-import { sessionCont } from "@/context/session";
+import { AuthSessionContext } from "@/context/authSession";
 import { UserT, VideoPost } from "@/utils/types";
 import { handlePostDelete, handlePostEdit } from "@/utils/posts/postactions";
 import SEO from "@/components/seo";
 import FollowBtn from "@/components/followbtn";
 
 const UserProfileDisplayPage = () => {
-  const session = useContext(sessionCont);
+  const session = useContext(AuthSessionContext);
   const router = useRouter();
   const { usersid } = useParams();
 
@@ -24,14 +24,14 @@ const UserProfileDisplayPage = () => {
   const [loadingDelete, setLoadingDelete] = useState(false);
 
   useEffect(() => {
-    if (!session?.userSession) {
+    if (!session?.session) {
       router.push("/");
       return;
     }
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/user/${session?.userSession?._id}?specificId=${usersid}`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}/user/${session?.session?._id}?specificId=${usersid}`,
           {
             method: "GET",
             credentials: "include",
@@ -74,11 +74,11 @@ const UserProfileDisplayPage = () => {
 
       <div className="max-w-3xl mx-auto p-3 flex-1">
         <div className="flex flex-col md:flex-row items-start md:items-center gap-8 mb-4">
-          <Uploadpicbtn userid={session?.userSession?._id as string} userData={userdata} />
+          <Uploadpicbtn userid={session?.session?._id as string} userData={userdata} />
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-4">
               <h1 className="text-2xl font-semibold">{userdata.username}</h1>
-              {usersid === session?.userSession?._id && (
+              {usersid === session?.session?._id && (
                 <>
                   <button className="px-4 py-1 bg-gray-100 rounded-md text-sm font-medium text-black">
                     Edit Profile
@@ -107,9 +107,9 @@ const UserProfileDisplayPage = () => {
                 Joined {new Date(userdata.createdAt!).toLocaleDateString()}
               </p>
             </div>
-            {usersid !== session?.userSession?._id && (
+            {usersid !== session?.session?._id && (
               <div className="flex gap-4 items-center w-full py-3">
-                <FollowBtn user={userdata} currUserId={session?.userSession?._id} classes="py-2 bg-yellow-500 w-1/2 text-black rounded font-medium" />
+                <FollowBtn user={userdata} currUserId={session?.session?._id} classes="py-2 bg-yellow-500 w-1/2 text-black rounded font-medium" />
                 <button className="py-2 border border-yellow-500 w-1/2 text-yellow-500 rounded font-medium cursor-not-allowed">Message</button>
               </div>
             )}

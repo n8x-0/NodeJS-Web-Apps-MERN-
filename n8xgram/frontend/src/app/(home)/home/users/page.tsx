@@ -1,6 +1,6 @@
 "use client"
 import FollowBtn from "@/components/followbtn"
-import { sessionCont } from "@/context/session"
+import { AuthSessionContext } from "@/context/authSession"
 import { UserT } from "@/utils/types"
 import Image from "next/image"
 import Link from "next/link"
@@ -9,12 +9,12 @@ import { useContext, useEffect, useState } from "react"
 
 
 const UsersPage = () => {
-  const session = useContext(sessionCont)
+  const session = useContext(AuthSessionContext)
   const router = useRouter()
 
   const [error, setError] = useState<string | null>(null)
   const [users, setUsers] = useState<UserT[]>([])
-  const currUserId = session?.userSession?._id
+  const currUserId = session?.session?._id
 
   const fetchUsers = async () => {
       try {
@@ -35,7 +35,7 @@ const UsersPage = () => {
   }
 
   useEffect(() => {
-    if(!session?.userSession){
+    if(!session?.session){
       router.push('/')
     }
   

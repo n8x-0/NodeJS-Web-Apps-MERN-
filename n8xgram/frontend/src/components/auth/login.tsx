@@ -4,10 +4,10 @@ import Link from "next/link";
 import { emailValidator, passwordSanitizer } from "@/utils/validators";
 import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { sessionCont } from "@/context/session";
+import { AuthSessionContext } from "@/context/authSession";
 
 const Login = () => {
-    const session = useContext(sessionCont)
+    const session = useContext(AuthSessionContext)
     const router = useRouter()
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
@@ -17,7 +17,7 @@ const Login = () => {
     })
 
     useEffect(() => {
-        if (session?.userSession) {
+        if (session?.session) {
             router.push("/home");
             return
         }

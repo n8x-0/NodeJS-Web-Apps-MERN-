@@ -2,112 +2,66 @@ const path = require("path");
 const vdoClient = require("../config/apivdo");
 const { dbconnect } = require("../db/db.connection");
 const userModel = require("../db/db.usermodel");
+const postModel = require("../db/db.postmodel")
 const fs = require("fs")
+const cloudinary = require('cloudinary').v2
 
 const cache = {}
 
 module.exports.uploadVideo = async (req, res) => {
-    const file = req.file;
-    const { userid } = req.params
-    let { payload } = req.body;
-    payload = JSON.parse(payload)
+    const body = req.body
+    const currentUser = req.user
 
-    if (!file) {
-        return res.status(400).json({ error: "Please Choose a file" });
-    }
+    await dbconnect()
+
     try {
-        const videoObject = await vdoClient.videos.create(payload);
-        const uploadVideo = await vdoClient.videos.upload(videoObject.videoId, file.path);
-
-        console.log("vdo: =======", uploadVideo);
-        fs.unlinkSync(file.path);
-
-        if (uploadVideo) {
-            try {
-                await dbconnect();
-                const updateUsersPosts = await userModel.findById(userid);
-                updateUsersPosts.posts.push(uploadVideo.videoId);
-                await updateUsersPosts.save();
-
-                return res.status(200).json({ message: "success" });
-            } catch (error) {
-                console.log(error);
-                await vdoClient.videos.delete(videoObject.videoId)
-                return res.status(500).json({ error: "Something went wrong" });
-            }
+        const user = await userModel.findById(currentUser._id)
+        if (!user) {
+            return res.status(404).json("User not found")
         }
-        return res.status(200).json({ message: "success" });
+        body.tags = body.tags.split(',')
+        body.author = currentUser._id
+        console.log(body);
+
+        const newPost = await postModel.create({ ...body })
+        user.posts.push(newPost._id)
+        await user.save()
+
+        return res.status(200).json({ message: "success", newPost, user })
     } catch (error) {
-        console.log(error);
-        // await vdoClient.videos.delete(videoObject.videoId)
-        return res.status(500).json({ error: "Something went wrong" });
+
     }
 };
 
+module.exports.getSigned = async (req, res) => {
+    const body = req.body
+    const signature = cloudinary.utils.api_sign_request(body.paramsToSign, process.env.CLOUDINARY_API_SECRET);
+    res.status(200).json({
+        signature,
+    });
+};
+
 module.exports.getAllvideos = async (req, res) => {
-    const page = req.body.page || 1
-    const filterId = req.body.userid || null
-
-    if (filterId) {
-        if (cache.specificUserVdosList) {
-            console.log("hit cache for spcifc user videos list");
-            return res.status(200).json(cache.specificUserVdosList)
-        }
-
-        const vdosList = await vdoClient.videos.list({
-            headers: { "Content-Type": "application/json" },
-            metadata: { "authorId": filterId }
-        });
-        console.log("hit db for spcifc user videos list");
-        if (vdosList.data[0]) {
-            cache.specificUserVdosList = vdosList
-
-            setTimeout(() => {
-                delete cache.vdosList
-            }, 120000)
-        }
-        return res.status(200).json(vdosList)
-    }
-
-    if (cache.videosWithAuthors && cache.page === page) {
-        console.log("cache hit for videos with authors");
-        return res.status(200).json(cache.videosWithAuthors)
-    }
+    const page = req.body.page || 1;
+    const limit = req.body.limit || 10;
+    const skip = (page - 1) * limit;
 
     try {
-        const vdosList = await vdoClient.videos.list({ currentPage: page, pageSize: 3 })
-        const usersid = vdosList.data.map((data) => data.metadata[0].value)
-
-        try {
-            await dbconnect()
-            const users = await userModel.find({ _id: { $in: usersid } }).select("username image followers followings");
-            console.log("db hit for videos with authors");
-
-            const userMap = users.reduce((map, user) => {
-                map[user._id.toString()] = user;
-                return map;
-            }, {});
-
-            const videosWithAuthors = vdosList.data.map((video) => ({
-                ...video,
-                author: userMap[video.metadata[0].value],
-            }));
-
-            cache.videosWithAuthors = videosWithAuthors
-            setTimeout(() => {
-                delete cache.page
-                delete cache.videosWithAuthors
-            }, 120000)
-            cache.page = page
-
-            return res.status(200).json(videosWithAuthors)
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ error: "cannot get videos at the momment !", message: error })
-        }
+        await dbconnect();
+        const posts = await postModel.find({})
+            .populate("author", "username image _id followers followings")
+            .skip(skip)
+            .limit(limit);
+        const totalCount = await postModel.countDocuments({});
+        return res.status(200).json({
+            posts,
+            currentPage: page,
+            totalPages: Math.ceil(totalCount / limit),
+            totalCount
+        });
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error: "cannot get videos at the momment !", message: error })
+        return res.status(500).json({ error: "Cannot get videos at the moment!", message: error });
     }
 }
 
@@ -135,13 +89,13 @@ module.exports.editVideoDetails = async (req, res) => {
 module.exports.deleteVideo = async (req, res) => {
     const { videoId, userid } = req.body
 
-    if(cache.deletingVideo) return res.status(102).json({message: "Your post is being deleted please wait."})
+    if (cache.deletingVideo) return res.status(102).json({ message: "Your post is being deleted please wait." })
 
     if (!videoId || !userid) {
         return res.status(400).json({ error: "Cannot delete your post at the moment" })
-    }else{
+    } else {
         cache.deletingVideo = true
-        setTimeout(()=> {
+        setTimeout(() => {
             delete cache.deletingVideo
         }, 8000)
     }

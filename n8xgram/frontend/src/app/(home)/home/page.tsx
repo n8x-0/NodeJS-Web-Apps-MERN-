@@ -1,7 +1,8 @@
 "use client";
 
 import FollowBtn from '@/components/followbtn';
-import { sessionCont } from '@/context/session';
+import { AuthSessionContext } from '@/context/authSession';
+import { VideoPost } from '@/utils/types';
 import { Camera, ChevronLeft, ChevronRight, Heart, Send } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -23,10 +24,16 @@ interface HomeVdoListIface {
 }
 
 const HomePage = () => {
-  const session = useContext(sessionCont)
+  const { session, loading } = useContext(AuthSessionContext) as { session: {_id: string} | null, loading: boolean }
   const router = useRouter()
+  
+  useEffect(() => {
+    if (!loading && session === null) {
+      router.push('/')
+    }
+  }, [session])
 
-  const [data, setData] = useState<HomeVdoListIface[]>([]);
+  const [data, setData] = useState<any>();
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -34,9 +41,10 @@ const HomePage = () => {
     try {
       const req = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/videos`, {
         method: "POST",
-        body: JSON.stringify({ page: currentPage }),
+        body: JSON.stringify({ page: currentPage, limit: 10 }),
         cache: "no-cache",
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
+        credentials: "include"
       });
 
       if (!req.ok) throw new Error("Failed to fetch videos.");
@@ -50,12 +58,6 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    if (!session?.userSession) {
-      router.push('/')
-    }
-  }, [session])
-  
-  useEffect(() => {
     fetchData();
   }, [currentPage]);
 
@@ -63,9 +65,9 @@ const HomePage = () => {
     <div className="max-w-3xl mx-auto p-3 flex-1 max-h-[90vh] overflow-auto hideScrollbar">
       <div className="w-full flex justify-center items-center flex-col">
         {error && <p className="text-red-500 py-6">{error}</p>}
-        {data && data.length > 0 ? data.map((video) => {
+        {data && data.posts.length > 0 ? data.posts.map((video: VideoPost) => {
           return (
-            <div key={video.videoId}>
+            <div key={video._id}>
               <div className="justify-between w-full p-3 border-zinc-700 border rounded-t-2xl flex items-center gap-2 text-sm">
                 {video.author &&
                   <>
@@ -77,14 +79,14 @@ const HomePage = () => {
                         <p>{video.author.username}</p>
                       </Link>
                     </div>
-                    <FollowBtn user={video.author} classes='bg-transparent text-yellow-400 underline underline-offset-4 hover:text-yellow-300 text-sm'/>
+                    <FollowBtn user={video.author} classes='bg-transparent text-yellow-400 underline underline-offset-4 hover:text-yellow-300 text-sm' />
                   </>
                 }
               </div>
               <div className="sm:w-[520px] w-full h-fit pb-2">
                 <div className="w-full sm:h-[600px] h-[400px] bg-zinc-600">
                   <iframe
-                    src={video.assets.player}
+                    src={video.secure_url}
                     width="100%"
                     height="100%"
                     allowFullScreen
@@ -124,7 +126,7 @@ const HomePage = () => {
         <div className="font-medium">{currentPage}</div>
         <button
           onClick={() => setCurrentPage(prev => prev + 1)}
-          disabled={!data[0]}
+          disabled={!data}
           className="px-4 py-2 bg-yellow-400 text-black font-medium rounded disabled:bg-yellow-100 disabled:text-zinc-300 disabled:cursor-not-allowed"
         >
           <ChevronRight />

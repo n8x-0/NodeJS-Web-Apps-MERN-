@@ -1,13 +1,13 @@
 "use client"
-import { sessionCont } from '@/context/session';
+import { AuthSessionContext } from '@/context/authSession';
 import { Search, Heart, Send, PlusSquare, Home, Compass } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useContext } from 'react';
 
 const Header = () => {
-    const session = useContext(sessionCont)
-    const authData = session?.userSession
+    const session = useContext(AuthSessionContext)
+    const authData = session?.session
 
     const icons = [
         { icon: Home, link: "/home" },

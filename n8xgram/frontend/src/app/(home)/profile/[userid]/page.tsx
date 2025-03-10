@@ -6,14 +6,14 @@ import Image from "next/image";
 import Uploadpicbtn from "@/components/profile/uploadpicbtn";
 import { useParams, useRouter } from "next/navigation";
 import LoadingProfile from "@/components/profile/loadingProfile";
-import { sessionCont } from "@/context/session";
+import { AuthSessionContext } from "@/context/authSession";
 import { UserT, VideoPost } from "@/utils/types";
 import { handlePostDelete, handlePostEdit } from "@/utils/posts/postactions";
 import Link from "next/link";
 import SEO from "@/components/seo";
 
 const UserProfileClient = () => {
-  const session = useContext(sessionCont)
+  const session = useContext(AuthSessionContext)
   const router = useRouter()
 
   const { userid } = useParams();
@@ -66,7 +66,7 @@ const UserProfileClient = () => {
   };
 
   useEffect(() => {
-    if (!session?.userSession) {
+    if (!session?.session) {
       router.push('/')
     }
 
